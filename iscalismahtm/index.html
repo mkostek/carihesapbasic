@@ -1,0 +1,67 @@
+<html>
+<head>
+<title>Login</title>
+<script src="script.js"></script>
+<script type="text/javascript" language="JavaScript" >
+window.addEventListener("load",function(){
+var y=document.getElementById("isekleme");
+y.style.display="none";
+// Code to connect the MS Access database using java Script
+// " C:/my_db.mdb " is the MS Access database
+var cn = new ActiveXObject("ADODB.Connection");
+var strConn = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source = iscalismahtm/is.mdb"; 
+var rs = new ActiveXObject("ADODB.Recordset");
+// Assume there is a table in MS Access database with the name " user_master “, below is the query for authentication
+var SQL = "select distinct(ad) from isi"; 
+cn.Open(strConn); 
+rs.Open(SQL, cn);
+ while (!rs.eof){
+
+document.getElementById("isim").innerHTML+='<option>'+rs.fields(0).value+'</option>';
+        rs.MoveNext();
+    }
+	rs.Close();
+	rs = new ActiveXObject("ADODB.Recordset");
+SQL = "select cAd,cNo,bfiyat from calisma"; 
+rs.Open(SQL, cn);
+ while (!rs.eof){
+
+document.getElementById("calisma").innerHTML+='<option value='+rs.fields(1).value+'>'+rs.fields(0).value+' '+rs.fields(2).value+ '</option>';
+        rs.MoveNext();
+    }
+
+rs.Close(); 	
+},false);
+
+
+</script>
+</head>
+<body>
+<div id="ekleme">
+<h3>Is Ekleme Sayfasi</h3>
+Kim<select id="isim" name="isim" >
+</select><br>
+<input type="text" id="tarih" name="tarih" placeholder="tarih"><br>
+<input type="button" value="ekle" onclick="firmaEkle()"><br>
+
+
+<input type="text" id="yeni" style="width:300px;" placeholder="eklenecek kisi yoksa buradan ekleyebilirsiniz"><br><input type="button" onclick="yeniEkle()" value="yeni Kisi"><br>
+</div>
+<div id="isekleme" style="display:none;">
+<h3>Sarfiyatlari ekleyiniz!</h3>
+<input type="hidden" id="id" name="id">
+Calisma<select id="calisma" name="calisma" >
+</select><br>
+adet <input type="text" id="adet" name="adet" value="0" placeholder="adet">
+<input type="button" value="ekle" onclick="calismaEkle()">
+
+<h4>Sarfiyatlar</h4>
+<table id="table">
+
+
+</table>
+<p id="toplam"></p>
+</div>
+</body>
+
+</html>

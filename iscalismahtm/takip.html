@@ -1,0 +1,84 @@
+<html>
+<head>
+<script src="script.js"></script>
+<script type="text/javascript" language="JavaScript" >
+
+var ucret=0,ucret_real=0;
+window.addEventListener("load",function(){
+
+// Code to connect the MS Access database using java Script
+// " C:/my_db.mdb " is the MS Access database
+var cn = new ActiveXObject("ADODB.Connection");
+var strConn = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source = iscalismahtm/is.mdb"; 
+var count=0;
+var a=0;
+var b=0;
+var str=new Array();
+cn.Open(strConn);
+var rs = new ActiveXObject("ADODB.Recordset");
+var SQL = "select distinct(ad) from isi"; 
+rs.Open(SQL, cn);
+document.getElementById("firma").innerHTML="";
+ while (!rs.eof){
+//document.getElementById("firma").innerHTML+='<option>'+rs.fields(0).value+'</option>';
+		str[count++]=rs.fields(0).value;
+        rs.MoveNext();
+    }
+	rs.Close();
+	var h;
+	for(h=0;h<count;h++)
+	{
+		a=0;b=0;
+		rs = new ActiveXObject("ADODB.Recordset");
+		var SQL = "SELECT sum(ucret) FROM isi WHERE isi.ad='"+str[h]+"'"; 
+		rs.Open(SQL, cn);
+		if(!rs.eof){
+//document.getElementById("firma").innerHTML+='<option>'+rs.fields(0).value+'</option>';
+		a=rs.fields(0).value;
+		}
+	rs.Close();
+		rs = new ActiveXObject("ADODB.Recordset");
+		var SQL="SELECT sum(tahsil.kBakiye)  FROM tahsil,isi WHERE isi.iNo=tahsil.iNo and isi.ad='"+str[h]+"'"; 
+		rs.Open(SQL, cn);
+		if(!rs.eof){
+//document.getElementById("firma").innerHTML+='<option>'+rs.fields(0).value+'</option>';
+		b=rs.fields(0).value;
+		}
+		rs.Close();
+		if(a>b)document.getElementById("firma").innerHTML+='<option>'+str[h]+'</option>';
+	}
+
+	rs = new ActiveXObject("ADODB.Recordset");
+SQL = "select iNo from isi"; 
+rs.Open(SQL, cn);document.getElementById("is").innerHTML="";
+ while (!rs.eof){
+
+document.getElementById("is").innerHTML+='<option value='+rs.fields(0).value+'>'+rs.fields(0).value+'</option>';
+        rs.MoveNext();
+    }
+
+rs.Close(); 	
+},false);
+
+
+</script>
+</head>
+<body>
+<h4>Tahsil Etme Sayfasi</h4>
+Firma<select id="firma" name="firma" onchange="isFiltrele()"><br>
+<option value="1">bir</option>
+<option value="2">iki</option>
+</select><br>
+Is Numarasi
+<select id="is" name="is" onchange="filter_id(this.value)">
+<option value="3">uc</option>
+<option value="4">dort</option>
+</select><br>
+<input type="text" name="ucret" id="ucret" placeholder="ucret giriniz"> <br>
+<input type="text" name="tarih" id="tarih" placeholder="tarih giriniz"><br>
+<input type="button" value="tahsil" onclick="tahsilEt()"><br>
+<h4>Yapilan Isler ve Tahsilatlar</h4>
+<table id="table">
+</table>
+</body>
+</html>
