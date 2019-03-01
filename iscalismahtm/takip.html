@@ -1,24 +1,85 @@
-<html>
+﻿<html>
 <head>
-<script src="script.js"></script>
-<script type="text/javascript" language="JavaScript" >
-
+	<script src="Chart.bundle.min.js"></script>
+	<script src="utils.js"></script>
+		<script src="script.js"></script>
+	<style>
+	canvas{
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	</style>
+<script>
+baglanti();
+var say=0;
 var ucret=0,ucret_real=0;
+		var MONTHS = new String('1.1.2019');
+		var config = {
+			type: 'line',
+			data: {
+				labels: ['0.0.0'],
+				datasets: [{
+					label: 'Hesap Hareketleri Grafigi',
+					backgroundColor: window.chartColors.gray,
+					borderColor: window.chartColors.green,
+					data: [
+						0
+					],
+					fill: false,
+				}]
+			},
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'Cari Hareket'
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Tarih'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Guncel Bakiye'
+						}
+					}]
+				}
+			}
+		};
+
+
+		
 window.addEventListener("load",function(){
 
+baslangic();
 // Code to connect the MS Access database using java Script
 // " C:/my_db.mdb " is the MS Access database
-var cn = new ActiveXObject("ADODB.Connection");
-var strConn = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source = iscalismahtm/is.mdb"; 
 var count=0;
 var a=0;
 var b=0;
 var str=new Array();
-cn.Open(strConn);
-var rs = new ActiveXObject("ADODB.Recordset");
+cn= new ActiveXObject("ADODB.Connection");
+cn.Open("Provider=Microsoft.Jet.OLEDB.4.0;Data Source = iscalismahtm/is.mdb");
+rs = new ActiveXObject("ADODB.Recordset");
 var SQL = "select distinct(ad) from isi"; 
 rs.Open(SQL, cn);
-document.getElementById("firma").innerHTML="";
+document.getElementById("is").innerHTML="<option>bos</option>";
+document.getElementById("firma").innerHTML="<option>bos</option>";
  while (!rs.eof){
 //document.getElementById("firma").innerHTML+='<option>'+rs.fields(0).value+'</option>';
 		str[count++]=rs.fields(0).value;
@@ -47,7 +108,7 @@ document.getElementById("firma").innerHTML="";
 		rs.Close();
 		if(a>b)document.getElementById("firma").innerHTML+='<option>'+str[h]+'</option>';
 	}
-
+	
 	rs = new ActiveXObject("ADODB.Recordset");
 SQL = "select iNo from isi"; 
 rs.Open(SQL, cn);document.getElementById("is").innerHTML="";
@@ -59,7 +120,6 @@ document.getElementById("is").innerHTML+='<option value='+rs.fields(0).value+'>'
 
 rs.Close(); 	
 },false);
-
 
 </script>
 </head>
@@ -80,5 +140,10 @@ Is Numarasi
 <h4>Yapilan Isler ve Tahsilatlar</h4>
 <table id="table">
 </table>
+<h4>Cari Borc/Alacak Grafigi</h4>
+<div style="width:57%;">
+<canvas id="canvas">
+</canvas>
+</div>
 </body>
 </html>
